@@ -42,6 +42,14 @@
         <version>2.11.7</version>
         <scope>provided</scope>
     </dependency>
+         
+         
+         
+       <dependency>
+            <groupId>org.apache.nifi</groupId>
+            <artifactId>nifi-storm-spout</artifactId>
+            <version>1.6.0</version>
+        </dependency>
 
 </dependencies>
 
