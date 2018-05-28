@@ -6,6 +6,11 @@ import org.apache.storm.kafka.spout.{KafkaSpout, KafkaSpoutConfig}
 import org.apache.storm.topology.TopologyBuilder
 import org.apache.storm.{Config, LocalCluster}
 
+import org.apache.nifi.remote.client.SiteToSiteClient
+import org.apache.nifi.remote.client.SiteToSiteClientConfig
+import org.apache.nifi.storm.NiFiDataPacket
+import org.apache.nifi.storm.NiFiSpout
+
 object Main{
 
   final val BOOTSTRAP_SERVERS:String = "localhost:9092"
@@ -24,6 +29,16 @@ object Main{
     val kafkaSpout: KafkaSpout[String, String] = new KafkaSpout[String, String](kafkaSpoutConfig)
 
     val builder: TopologyBuilder = new TopologyBuilder
+    
+    
+    val clientConfig = new SiteToSiteClient.Builder()
+      .url("http://localhost:8099/nifi")
+      .portName("storm")
+      .buildConfig();
+    builder.setSpout("nifi", new NiFiSpout(clientConfig));
+    
+    
+    
     builder.setSpout("kafka_spout", kafkaSpout)
     builder.setBolt("uppercase_bolt", new UpperCaseBolt).shuffleGrouping("kafka_spout")
 
